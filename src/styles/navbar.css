@@ -1,0 +1,33 @@
+.navbar {
+    background-color: rgba(255, 0, 0, 0.8); /* Red color with 80% opacity */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-title {
+    height: 60px; 
+    width: auto;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-button {
+    margin-left: 20px;
+    height: 40px; /* Set a consistent height for nav buttons */
+    width: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.nav-button:hover {
+    transform: scale(1.1); /* Scale up on hover for effect */
+}

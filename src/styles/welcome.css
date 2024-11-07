@@ -1,3 +1,31 @@
+.welcome-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
 .get-started-button {
-    background-color: aliceblue;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: #ff0000; /* Pokémon red */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Pokemon Solid', sans-serif; /* Ensure font aligns with theme */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: transform 0.2s, background-color 0.2s ease;
+}
+
+.get-started-button:hover {
+  background-color: #cc0000; /* Darker red on hover */
+  transform: scale(1.05);
+}
+
+.get-started-button:active {
+  transform: scale(0.95);
 }
