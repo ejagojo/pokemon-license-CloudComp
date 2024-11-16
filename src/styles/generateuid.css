@@ -1,0 +1,31 @@
+/* generateuid.css */
+
+.generate-uid-container {
+    background-color: #ffcc00; /* Pokémon yellow */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.generate-uid-button {
+    padding: 10px 20px;
+    background-color: #cc0000; /* Pokémon red */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.generate-uid-button:hover {
+    background-color: #aa0000; /* Darker red on hover */
+}
+
+.uid-display {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #003366; /* Pokémon blue */
+    font-weight: bold;
+}
