@@ -12,10 +12,12 @@ const WelcomePage = () => {
 
     return (
         <div className="welcome-main">
-            <img src={require('../assets/Welcome-title.png')} alt="Welcome Title" className="welcome-title" />
-            <button onClick={handleGetStarted} className="get-started-button">Get Started ➔</button>
+            <div className="welcome-comtent">
+                <img src={require('../assets/Welcome-title.png')} alt="Welcome Title" className="welcome-title" />
+                <button onClick={handleGetStarted} className="get-started-button">Get Started ➔</button>
+            </div>
         </div>
     );
-}
+};
 
 export default WelcomePage;
