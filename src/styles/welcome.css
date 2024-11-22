@@ -1,29 +1,42 @@
 .welcome-main {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   height: 100vh;
-  text-align: center;
+  padding: 0 40px;
+}
+
+.welcome-content {
+  display: block;
+  align-items: left;
+}
+
+.welcome-title {
+  display: block;
+  max-width: 79%;
+  margin-top: 180px;
 }
 
 .get-started-button {
-  padding: 12px 24px;
-  font-size: 1.2rem;
+  display: block;
+  padding: 12px 22px;
+  font-size: 1.5rem;
   color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1); /* Adds a subtle shadow to the text */
   background-color: #ff0000; /* Pokémon red */
   border: none;
-  border-radius: 8px;
+  margin-left: 300px;
+  border-radius: 50px;
   cursor: pointer;
-  font-family: 'Pokemon Solid', sans-serif; /* Ensure font aligns with theme */
+  font-family: 'PokemonSolid', sans-serif; /* Ensure font aligns with theme */
   text-transform: uppercase;
-  letter-spacing: 1px;
   transition: transform 0.2s, background-color 0.2s ease;
 }
 
+
 .get-started-button:hover {
   background-color: #cc0000; /* Darker red on hover */
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .get-started-button:active {
