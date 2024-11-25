@@ -1,12 +1,17 @@
-/* inputform.css */
 .input-form-container {
     background: url("../assets/container-background.jpg") no-repeat center center;
     background-size: cover;
-    width: 30%; /* Adjusted to take less space */
+    flex: 1; /* Allow flexible width */
     padding: 20px;
     border-radius: 10px;
     color: #fff;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: 70%; /* Ensures the height matches the layout */
+    margin-left: 10px; /* Space between form and intro */
+    box-sizing: border-box;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .input-form-container {
+        margin-left: 0;
+    }
 }

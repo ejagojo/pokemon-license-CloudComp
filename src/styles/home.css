@@ -3,10 +3,20 @@
     color: white;
     padding: 20px;
     border-radius: 8px;
-    max-width: 1500px;
-    height: 700px;
-    margin: 50px auto;
+    width: 80%; /* Set a consistent width */
+    max-width: 1200px; /* Maximum width */
+    margin: 100px auto; /* Center horizontally and add top margin to avoid navbar overlap */
     display: flex;
-    justify-content: space-between; /* Space between intro and form */
-    align-items: center; /* Center align containers */
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    box-sizing: border-box;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .home-container {
+        flex-direction: column; /* Stack components vertically */
+        align-items: center;
+        margin: 80px auto; /* Adjust top margin for smaller screens */
+    }
 }
