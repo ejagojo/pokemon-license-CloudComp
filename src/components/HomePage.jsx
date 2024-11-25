@@ -1,11 +1,15 @@
 import React from "react";
-import '../styles/home.css'
+import '../styles/home.css';
+import InputForm from "./InputForm";
+import Intro from "./Intro";
+import GenerateUID from "./GenerateUID";
 
 const HomePage = () => {
     return (
         <div className="home-container">
-            <h1>Home Page</h1>
-            <p>Input form and the passage goes here</p>
+                <Intro />
+                <InputForm />
+                <GenerateUID />
         </div>
     );
 }
