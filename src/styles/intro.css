@@ -1,8 +1,17 @@
 .intro-container {
-    background-color: #003366; /* Dark blue background */
-    width: 60%;
+    background-color: #003366;
+    flex: 1; /* Allow flexible width */
     padding: 20px;
     border-radius: 10px;
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 10px; /* Space between intro and form */
+    box-sizing: border-box;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .intro-container {
+        margin-right: 0;
+        margin-bottom: 20px; /* Space between stacked components */
+    }
 }

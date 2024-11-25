@@ -1,10 +1,18 @@
 .about-container {
-    background-color: rgba(59, 76, 202, 0.8); /* #3B4CCA with 80% opacity */
-    color: white; /* Text color to stand out on dark background */
+    background-color: rgba(59, 76, 202, 0.8);
+    color: white;
     padding: 20px;
-    border-radius: 8px; /* Optional: rounded corners */
-    max-width: 1500px;
-    height: 700px;
-    margin: 50px auto;
+    border-radius: 8px;
+    width: 80%; /* Match home-container width */
+    max-width: 1200px;
+    margin: 100px auto; /* Center and prevent navbar overlap */
     text-align: center;
+    box-sizing: border-box;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .about-container {
+        margin: 80px auto; /* Adjust top margin for consistency */
+    }
 }
