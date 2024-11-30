@@ -1,24 +1,121 @@
-/* Modal Styling */
 .license-modal {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
-.license-modal button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #3b4cca; /* Cerulean Blue */
-  color: white;
-  cursor: pointer;
+
+.license-horizontal {
+  width: 550px; /* Adjusted to CR80 size */
+  height: 340px;
+  background: linear-gradient(to bottom, #cc0000, #ff0000); 
+  border: 4px solid #cc0000; /* Boston University Red */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Verdana', sans-serif;
+  color: #000;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
 }
-.license-modal button:hover {
+
+/* Header Section */
+.license-header {
+  background-color: #3b4cca; /* Cerulean Blue */
+  color: #ffde00; /* Golden Yellow */
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.trainer-name {
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
+
+.trainer-id {
+  font-size: 0.8rem;
+  margin-right: 10px;
+}
+
+/* Body Section */
+.license-body {
+  display: flex;
+  flex: 1;
+  padding: 8px;
+  align-items: center;
+}
+
+/* Trainer Image */
+.trainer-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trainer-image img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  border: 2px solid #3b4cca; /* Cerulean Blue */
+  background-color: #fff;
+}
+
+/* Trainer Info */
+.trainer-info {
+  flex: 2;
+  padding: 8px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  background-color: #fff;
+  border: 2px solid #ffde00; /* Red Border */
+  border-radius: 8px;
+  margin-left: 8px;
+}
+
+.trainer-info p {
+  margin: 4px 0;
+}
+
+.trainer-info p strong {
+  color: #cc0000; /* Boston University Red */
+}
+
+/* Buttons */
+.license-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.license-buttons button {
+  background-color: #3b4cca;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.license-buttons button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.license-buttons button:hover:not(:disabled) {
   background-color: #2e3b8e;
 }

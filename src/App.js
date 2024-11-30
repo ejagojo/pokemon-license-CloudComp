@@ -19,7 +19,7 @@ function App() {
             element={
               <>
                 <Navbar />
-                <PokemonLicense uid="dummy-uid" /> {/* Pass dummy UID */}
+                <PokemonLicense uid="dummy-uid" />
               </>
             }
           />

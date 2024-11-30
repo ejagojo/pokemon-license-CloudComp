@@ -12,7 +12,10 @@ const GenerateUID = () => {
                 name: "John Doe", // Placeholder name
                 email: "johndoe@example.com", // Placeholder email
                 favoritePokemon: "Pikachu", // Placeholder Pokémon
-                trainerType: "Elite Trainer" // Placeholder trainer type
+                trainerType: "Elite Trainer", // Placeholder trainer type
+                region: "Pokemon Region",
+                birthday: "07/08/2002",
+                height: "5'15"
             };
 
             // Simulate API call to Lambda
