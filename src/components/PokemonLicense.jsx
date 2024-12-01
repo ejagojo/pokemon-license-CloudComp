@@ -1,3 +1,5 @@
+// File: /src/components/PokemonLicense.jsx
+
 import React, { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
@@ -6,6 +8,7 @@ import "../styles/pokemon-license.css";
 
 const PokemonLicense = ({ uid, onClose }) => {
   const [trainerData, setTrainerData] = useState(null);
+  const [pokemonSprites, setPokemonSprites] = useState([]);
   const licenseRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -13,6 +16,42 @@ const PokemonLicense = ({ uid, onClose }) => {
     const fetchData = async () => {
       const data = await fetchTrainerData(uid);
       setTrainerData(data);
+
+      // After setting trainerData, fetch Pokémon IDs and build sprites
+      const pokemonNames = [data.pokemon1, data.pokemon2, data.pokemon3];
+
+      const fetchPokemonSprites = async () => {
+        const sprites = await Promise.all(
+          pokemonNames.map(async (name) => {
+            try {
+              const response = await fetch(
+                `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              const pokemonData = await response.json();
+              const id = pokemonData.id.toString().padStart(3, "0");
+              const spriteUrl = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${id}.png`;
+              return {
+                name: name,
+                sprite: spriteUrl,
+                link: `https://pokemondb.net/pokedex/${name.toLowerCase()}`,
+              };
+            } catch (error) {
+              console.error(`Error fetching data for ${name}:`, error);
+              return {
+                name: name,
+                sprite: "/assets/placeholder.png", // Fallback image
+                link: `https://pokemondb.net/pokedex/${name.toLowerCase()}`,
+              };
+            }
+          })
+        );
+        setPokemonSprites(sprites);
+      };
+
+      fetchPokemonSprites();
     };
     fetchData();
   }, [uid]);
@@ -22,7 +61,7 @@ const PokemonLicense = ({ uid, onClose }) => {
       try {
         setIsDownloading(true);
         const canvas = await html2canvas(licenseRef.current, {
-          useCORS: true,
+          useCORS: true, // Enable CORS
           scale: 2, // High-resolution output
         });
         canvas.toBlob((blob) => {
@@ -37,7 +76,7 @@ const PokemonLicense = ({ uid, onClose }) => {
     }
   };
 
-  if (!trainerData) {
+  if (!trainerData || pokemonSprites.length === 0) {
     return <p>Loading...</p>;
   }
 
@@ -69,9 +108,6 @@ const PokemonLicense = ({ uid, onClose }) => {
               <strong>Region:</strong> {trainerData.region}
             </p>
             <p>
-              <strong>Favorite Pokémon:</strong> {trainerData.favoritePokemon}
-            </p>
-            <p>
               <strong>Trainer Type:</strong> {trainerData.trainerType}
             </p>
             <p>
@@ -81,6 +117,28 @@ const PokemonLicense = ({ uid, onClose }) => {
               <strong>Badges:</strong> {trainerData.badgeCount}
             </p>
           </div>
+        </div>
+
+        {/* Pokémon Sprites */}
+        <div className="pokemon-sprites">
+          {pokemonSprites.map((pokemon, index) => (
+            <div key={index} className="pokemon-container">
+              <a
+                href={pokemon.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={pokemon.sprite}
+                  alt={pokemon.name}
+                  className="pokemon-sprite"
+                  onError={(e) => {
+                    e.target.src = "/assets/placeholder.png"; // Fallback image
+                  }}
+                />
+              </a>
+            </div>
+          ))}
         </div>
       </div>
 

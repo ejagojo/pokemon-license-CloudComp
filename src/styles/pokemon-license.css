@@ -1,3 +1,16 @@
+@font-face {
+  font-family: 'Pokemon Classic';
+  src: url('../assets/font/Pokemon Classic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Apply the font globally within the license */
+.license-horizontal {
+  font-family: 'Pokemon Classic', sans-serif;
+}
+
+
 .license-modal {
   position: fixed;
   top: 0;
@@ -118,4 +131,43 @@
 
 .license-buttons button:hover:not(:disabled) {
   background-color: #2e3b8e;
+}
+
+/* Pokémon Sprites Section */
+.pokemon-sprites {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffde00; /* Matches retro theme */
+  padding: 10px;
+  margin-top: 10px;
+  border-top: 2px solid #cc0000;
+  border-radius: 0 0 12px 12px; /* Rounded bottom corners */
+}
+
+.pokemon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #ffffff, #e1e1e1); /* Subtle retro */
+  border: 2px solid #3b4cca; /* Cerulean Blue */
+  border-radius: 8px;
+  padding: 5px;
+  width: 90px; /* Square layout */
+  height: 90px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pokemon-sprite {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.trainer-info,
+.trainer-name,
+.trainer-id,
+.pokemon-name {
+  font-family: 'Pokemon Classic', sans-serif;
 }
