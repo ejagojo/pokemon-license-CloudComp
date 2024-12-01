@@ -1,5 +1,3 @@
-// File: /src/components/PokemonLicense.jsx
-
 import React, { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
@@ -8,7 +6,6 @@ import "../styles/pokemon-license.css";
 
 const PokemonLicense = ({ uid, onClose }) => {
   const [trainerData, setTrainerData] = useState(null);
-  const [pokemonSprites, setPokemonSprites] = useState([]);
   const licenseRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -16,42 +13,6 @@ const PokemonLicense = ({ uid, onClose }) => {
     const fetchData = async () => {
       const data = await fetchTrainerData(uid);
       setTrainerData(data);
-
-      // After setting trainerData, fetch Pokémon IDs and build sprites
-      const pokemonNames = [data.pokemon1, data.pokemon2, data.pokemon3];
-
-      const fetchPokemonSprites = async () => {
-        const sprites = await Promise.all(
-          pokemonNames.map(async (name) => {
-            try {
-              const response = await fetch(
-                `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`
-              );
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-              const pokemonData = await response.json();
-              const id = pokemonData.id.toString().padStart(3, "0");
-              const spriteUrl = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${id}.png`;
-              return {
-                name: name,
-                sprite: spriteUrl,
-                link: `https://pokemondb.net/pokedex/${name.toLowerCase()}`,
-              };
-            } catch (error) {
-              console.error(`Error fetching data for ${name}:`, error);
-              return {
-                name: name,
-                sprite: "/assets/placeholder.png", // Fallback image
-                link: `https://pokemondb.net/pokedex/${name.toLowerCase()}`,
-              };
-            }
-          })
-        );
-        setPokemonSprites(sprites);
-      };
-
-      fetchPokemonSprites();
     };
     fetchData();
   }, [uid]);
@@ -61,7 +22,7 @@ const PokemonLicense = ({ uid, onClose }) => {
       try {
         setIsDownloading(true);
         const canvas = await html2canvas(licenseRef.current, {
-          useCORS: true, // Enable CORS
+          useCORS: true,
           scale: 2, // High-resolution output
         });
         canvas.toBlob((blob) => {
@@ -76,9 +37,28 @@ const PokemonLicense = ({ uid, onClose }) => {
     }
   };
 
-  if (!trainerData || pokemonSprites.length === 0) {
+  if (!trainerData) {
     return <p>Loading...</p>;
   }
+
+  // Construct Pokémon sprites using Generation 9 sprite URLs
+  const pokemonSprites = [
+    {
+      name: trainerData.pokemon1,
+      sprite: `https://img.pokemondb.net/sprites/scarlet-violet/normal/${trainerData.pokemon1.toLowerCase()}.png`,
+      link: `https://pokemondb.net/pokedex/${trainerData.pokemon1.toLowerCase()}`,
+    },
+    {
+      name: trainerData.pokemon2,
+      sprite: `https://img.pokemondb.net/sprites/scarlet-violet/normal/${trainerData.pokemon2.toLowerCase()}.png`,
+      link: `https://pokemondb.net/pokedex/${trainerData.pokemon2.toLowerCase()}`,
+    },
+    {
+      name: trainerData.pokemon3,
+      sprite: `https://img.pokemondb.net/sprites/scarlet-violet/normal/${trainerData.pokemon3.toLowerCase()}.png`,
+      link: `https://pokemondb.net/pokedex/${trainerData.pokemon3.toLowerCase()}`,
+    },
+  ];
 
   return (
     <div className="license-modal">
@@ -123,11 +103,7 @@ const PokemonLicense = ({ uid, onClose }) => {
         <div className="pokemon-sprites">
           {pokemonSprites.map((pokemon, index) => (
             <div key={index} className="pokemon-container">
-              <a
-                href={pokemon.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={pokemon.link} target="_blank" rel="noopener noreferrer">
                 <img
                   src={pokemon.sprite}
                   alt={pokemon.name}
