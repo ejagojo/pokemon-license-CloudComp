@@ -1,17 +1,40 @@
 .input-form-container {
-    background: url("../assets/container-background.jpg") no-repeat center center;
+    background: url('../assets/container-background.jpg') no-repeat center center;
     background-size: cover;
-    flex: 1; /* Allow flexible width */
-    padding: 20px;
-    border-radius: 10px;
+    padding: 30px;
+    border-radius: 12px;
     color: #fff;
-    margin-left: 10px; /* Space between form and intro */
+    max-width: 500px;
+    margin: 50px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.input-form-container input,
+.input-form-container select,
+.input-form-container button {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
     box-sizing: border-box;
 }
 
-/* Responsive styles */
+.input-form-container button {
+    background-color: #3B4CCA;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.input-form-container button:hover {
+    background-color: #2c3ba1;
+}
+
 @media (max-width: 768px) {
     .input-form-container {
-        margin-left: 0;
+        margin: 20px;
+        padding: 15px;
     }
 }

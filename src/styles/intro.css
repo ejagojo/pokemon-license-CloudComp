@@ -1,12 +1,24 @@
 .intro-container {
-    background-color: #003366;
-    flex: 1; /* Allow flexible width */
+    background-image: url("../assets/container-background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex: 1;
     padding: 20px;
     border-radius: 10px;
-    color: white;
-    margin-right: 10px; /* Space between intro and form */
+    margin-right: 10px;
     box-sizing: border-box;
+    position: relative; /* Required for inner elements */
+    color: white;
 }
+
+.intro-container .text-highlight {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black highlight */
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block; /* Ensures padding adjusts only around text */
+}
+
 
 /* Responsive styles */
 @media (max-width: 768px) {
