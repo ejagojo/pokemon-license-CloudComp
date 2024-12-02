@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
-import html2canvas from "html2canvas";
-import { saveAs } from "file-saver";
+import React, { useEffect, useState } from "react";
 import { fetchTrainerData } from "../services/dataService";
 import "../styles/pokemon-license.css";
 
 const PokemonLicense = ({ uid, onClose }) => {
   const [trainerData, setTrainerData] = useState(null);
-  const licenseRef = useRef(null);
-  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,31 +13,14 @@ const PokemonLicense = ({ uid, onClose }) => {
     fetchData();
   }, [uid]);
 
-  const handleDownload = async () => {
-    if (licenseRef.current) {
-      try {
-        setIsDownloading(true);
-        const canvas = await html2canvas(licenseRef.current, {
-          useCORS: true,
-          scale: 2, // High-resolution output
-        });
-        canvas.toBlob((blob) => {
-          saveAs(blob, `${trainerData.name}_Pokemon_License.png`);
-        });
-      } catch (error) {
-        console.error("Error generating the license image:", error);
-        alert("An error occurred while generating the license.");
-      } finally {
-        setIsDownloading(false);
-      }
-    }
+  const handlePrint = () => {
+    window.print(); // Opens print dialog
   };
 
   if (!trainerData) {
     return <p>Loading...</p>;
   }
 
-  // Construct Pokémon sprites using Generation 9 sprite URLs
   const pokemonSprites = [
     {
       name: trainerData.pokemon1,
@@ -62,7 +41,7 @@ const PokemonLicense = ({ uid, onClose }) => {
 
   return (
     <div className="license-modal">
-      <div className="license-horizontal" ref={licenseRef}>
+      <div className="license-horizontal">
         {/* Header */}
         <div className="license-header">
           <span className="trainer-name">{trainerData.name}</span>
@@ -99,30 +78,32 @@ const PokemonLicense = ({ uid, onClose }) => {
           </div>
         </div>
 
-        {/* Pokémon Sprites */}
-        <div className="pokemon-sprites">
-          {pokemonSprites.map((pokemon, index) => (
-            <div key={index} className="pokemon-container">
-              <a href={pokemon.link} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={pokemon.sprite}
-                  alt={pokemon.name}
-                  className="pokemon-sprite"
-                  onError={(e) => {
-                    e.target.src = "/assets/placeholder.png"; // Fallback image
-                  }}
-                />
-              </a>
-            </div>
-          ))}
+        {/* Pokémon Sprites Section */}
+        <div className="pokemon-sprites-section">
+          {/* <h3 className="pokemon-title">Top 3 Pokémon</h3> */}
+          <div className="pokemon-sprites">
+            {pokemonSprites.map((pokemon, index) => (
+              <div key={index} className="pokemon-container">
+                <a href={pokemon.link} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={pokemon.sprite}
+                    alt={pokemon.name}
+                    className="pokemon-sprite"
+                    onError={(e) => {
+                      e.target.src = "/assets/placeholder.png"; // Fallback image
+                    }}
+                  />
+                </a>
+                <p className="pokemon-name">{pokemon.name}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Buttons */}
       <div className="license-buttons">
-        <button onClick={handleDownload} disabled={isDownloading}>
-          {isDownloading ? "Downloading..." : "Download License"}
-        </button>
+        <button onClick={handlePrint}>Print License</button>
         <button onClick={onClose}>Close</button>
       </div>
     </div>
