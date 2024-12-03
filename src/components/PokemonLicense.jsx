@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { fetchTrainerData } from "../services/dataService";
 import "../styles/pokemon-license.css";
 
 const PokemonLicense = ({ uid, onClose }) => {
   const [trainerData, setTrainerData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchTrainerData(uid);
-      setTrainerData(data);
+    const fetchData = () => {
+      const savedData = localStorage.getItem("trainerData");
+      if (savedData) {
+        setTrainerData(JSON.parse(savedData));
+      }
     };
     fetchData();
-  }, [uid]);
+  }, []);
+
 
   const handlePrint = () => {
     window.print(); // Opens print dialog

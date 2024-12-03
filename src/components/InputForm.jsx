@@ -52,42 +52,69 @@ const InputForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the trainer data
-    const trainerData = {
-      name,
-      email,
-      birthday,
-      trainerType,
-      region,
-      profileImage: profileImage ? previewImage : null, // Include base64 if needed
-      pokemonTeam: [pokemon1?.value, pokemon2?.value, pokemon3?.value], // Pokémon team selected
-      badgeCount,
-      signatureMove,
-    };
+    let isUnique = false;
+    let licenseID;
+    let retryCount = 0;
 
-    try {
-      // Send data to the Lambda function (API Gateway endpoint)
-      const response = await fetch("YOUR_API_GATEWAY_ENDPOINT", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(trainerData),
-      });
+    while (!isUnique && retryCount < 3) {
+      // Generate a unique license ID
+      licenseID = `PKM-${Date.now().toString(36).toUpperCase()}-${Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase()}`;
 
-      if (!response.ok) {
-        throw new Error("Failed to save trainer data.");
+      // Prepare the license data
+      const licenseData = {
+        licenseID,
+        name,
+        email,
+        birthday,
+        trainerType,
+        region,
+        profileImage: profileImage ? previewImage : null,
+        pokemonTeam: [pokemon1?.value, pokemon2?.value, pokemon3?.value],
+        badgeCount,
+        signatureMove,
+      };
+
+      try {
+        // Send license data to the backend
+        const response = await fetch("YOUR_API_ENDPOINT_HERE", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            licenseID,
+            license: licenseData, // Only send necessary fields
+          }),
+        });
+
+        if (response.ok) {
+          console.log("License saved successfully:", await response.json());
+          isUnique = true;
+
+          // Save license data to localStorage
+          localStorage.setItem("trainerData", JSON.stringify(licenseData));
+          console.log("License Data Saved to LocalStorage:", licenseData);
+
+          setShowLicense(true);
+        } else if (response.status === 409) {
+          console.warn("Duplicate licenseID detected. Retrying...");
+          retryCount++;
+        } else {
+          console.error("Failed to save data to backend:", await response.text());
+          break;
+        }
+      } catch (error) {
+        console.error("Error saving license data to backend:", error);
+        break;
       }
+    }
 
-      const result = await response.json();
-      console.log("Trainer license saved:", result);
-
-      // Show success or handle license ID
-      setShowLicense(true);
-    } catch (error) {
-      console.error("Error submitting trainer profile:", error);
+    if (!isUnique) {
+      alert("Failed to generate a unique license. Please try again.");
     }
   };
+
 
 
   // Custom styles for the react-select component
