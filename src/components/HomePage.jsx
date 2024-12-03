@@ -1,17 +1,18 @@
 import React from "react";
-import '../styles/home.css';
-import InputForm from "./InputForm";
 import Intro from "./Intro";
-import GenerateUID from "./GenerateUID";
+import InputForm from "./InputForm";
+import "../styles/home.css";
 
 const HomePage = () => {
-    return (
-        <div className="home-container">
-                <Intro />
-                <InputForm />
-                <GenerateUID />
-        </div>
-    );
-}
+  return (
+    <div className="home-container">
+      {/* Intro Section */}
+      <Intro />
+
+      {/* Input Form Section */}
+      <InputForm />
+    </div>
+  );
+};
 
 export default HomePage;

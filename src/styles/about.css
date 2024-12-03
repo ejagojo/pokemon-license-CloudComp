@@ -4,8 +4,8 @@
     padding: 20px;
     border-radius: 8px;
     width: 80%; /* Match home-container width */
-    max-width: 1200px;
-    margin: 100px auto; /* Center and prevent navbar overlap */
+    max-width: 1500px;
+    margin: 10px auto; /* Center and prevent navbar overlap */
     text-align: center;
     box-sizing: border-box;
 }

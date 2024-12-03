@@ -4,8 +4,8 @@
     padding: 20px;
     border-radius: 8px;
     width: 80%; /* Set a consistent width */
-    max-width: 1200px; /* Maximum width */
-    margin: 100px auto; /* Center horizontally and add top margin to avoid navbar overlap */
+    max-width: 1500px; /* Maximum width */
+    margin: 10px auto; /* Center horizontally and add top margin to avoid navbar overlap */
     display: flex;
     justify-content: space-between;
     align-items: flex-start; /* Align items to the top */
