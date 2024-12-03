@@ -52,70 +52,48 @@ const InputForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let isUnique = false;
-    let licenseID;
-    let retryCount = 0;
+    // Generate a unique license ID
+    const licenseID = `PKM-${Date.now().toString(36).toUpperCase()}-${Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase()}`;
 
-    while (!isUnique && retryCount < 3) {
-      // Generate a unique license ID
-      licenseID = `PKM-${Date.now().toString(36).toUpperCase()}-${Math.random()
-        .toString(36)
-        .substring(2, 8)
-        .toUpperCase()}`;
+    // Prepare the license data to save locally
+    const licenseData = {
+      licenseID,
+      name,
+      email,
+      birthday,
+      trainerType,
+      region,
+      profileImage: profileImage ? previewImage : null,
+      pokemonTeam: [pokemon1?.value, pokemon2?.value, pokemon3?.value],
+      badgeCount,
+      signatureMove,
+    };
 
-      // Prepare the license data
-      const licenseData = {
-        licenseID,
-        name,
-        email,
-        birthday,
-        trainerType,
-        region,
-        profileImage: profileImage ? previewImage : null,
-        pokemonTeam: [pokemon1?.value, pokemon2?.value, pokemon3?.value],
-        badgeCount,
-        signatureMove,
-      };
+    // Save license data to localStorage for display purposes
+    localStorage.setItem("trainerData", JSON.stringify(licenseData));
+    console.log("License Data Saved to LocalStorage:", licenseData);
 
-      try {
-        // Send license data to the backend
-        const response = await fetch("YOUR_API_ENDPOINT_HERE", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            licenseID,
-            license: licenseData, // Only send necessary fields
-          }),
-        });
+    // Send only the license ID to the backend
+    try {
+      const response = await fetch("YOUR_API_ENDPOINT_HERE", { // ENDPOINT RIGHT HEREE
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ licenseID }), // Send only the license ID
+      });
 
-        if (response.ok) {
-          console.log("License saved successfully:", await response.json());
-          isUnique = true;
-
-          // Save license data to localStorage
-          localStorage.setItem("trainerData", JSON.stringify(licenseData));
-          console.log("License Data Saved to LocalStorage:", licenseData);
-
-          setShowLicense(true);
-        } else if (response.status === 409) {
-          console.warn("Duplicate licenseID detected. Retrying...");
-          retryCount++;
-        } else {
-          console.error("Failed to save data to backend:", await response.text());
-          break;
-        }
-      } catch (error) {
-        console.error("Error saving license data to backend:", error);
-        break;
+      if (response.ok) {
+        console.log("License ID saved successfully:", await response.json());
+        setShowLicense(true);
+      } else {
+        console.error("Failed to save license ID to backend:", await response.text());
       }
-    }
-
-    if (!isUnique) {
-      alert("Failed to generate a unique license. Please try again.");
+    } catch (error) {
+      console.error("Error saving license ID to backend:", error);
     }
   };
-
-
 
   // Custom styles for the react-select component
   const customStyles = {
@@ -273,7 +251,7 @@ const InputForm = () => {
         </form>
       </div>
       {showLicense && (
-        <PokemonLicense uid="dummy-uid" onClose={() => setShowLicense(false)} />
+        <PokemonLicense onClose={() => setShowLicense(false)} />
       )}
     </div>
   );
