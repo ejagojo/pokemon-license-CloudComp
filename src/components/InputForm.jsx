@@ -12,7 +12,6 @@ const InputForm = () => {
       {showLicense && (
         <div className="license-modal">
           <PokemonLicense uid="dummy-uid" onClose={() => setShowLicense(false)} />
-          <button onClick={() => setShowLicense(false)}>Close</button>
         </div>
       )}
     </div>
