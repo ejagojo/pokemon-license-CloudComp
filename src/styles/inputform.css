@@ -35,8 +35,7 @@
   display: flex;
   flex-direction: column;
   font-weight: bold;
-  color: #ffde00; /* Golden yellow text for labels */
-  font-family: 'Pokemon Classic', sans-serif; /* Use Pokémon font */
+  color: #ffffff; /* Golden yellow text for labels */
 }
 
 .input-form-container input,
@@ -67,7 +66,6 @@
   font-size: 18px;
   font-weight: bold;
   text-transform: uppercase;
-  font-family: 'Pokemon Classic', sans-serif;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -89,7 +87,6 @@
 /* Pokémon Team Section */
 h4 {
   color: #ffde00; /* Golden yellow for headings */
-  font-family: 'Pokemon Classic', sans-serif;
   text-transform: uppercase;
   margin-top: 20px;
   text-align: center;
