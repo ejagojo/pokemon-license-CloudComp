@@ -3,12 +3,15 @@ import homeButton from "../assets/buttons/home-button.png";
 import aboutButton from "../assets/buttons/about-button.png";
 import projectTitle from "../assets/project-title.png";
 import "../styles/navbar.css";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [licenseID, setLicenseID] = useState("");
   const [licenseImage, setLicenseImage] = useState(null); // Stores the retrieved license image
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Controls the modal visibility
+
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
     setError(null);
@@ -45,6 +48,10 @@ const Navbar = () => {
     setIsModalOpen(false); // Close the modal
   };
 
+    const handleNavigation = (path) => {
+        navigate(path);
+    }
+
   return (
     <div className="navbar">
       {/* Logo Section */}
@@ -79,8 +86,18 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <div className="nav-links">
-        <img src={homeButton} alt="Home" className="nav-button" />
-        <img src={aboutButton} alt="About" className="nav-button" />
+        <img 
+        src={homeButton} 
+        alt="Home" 
+        className="nav-button" 
+        onClick={() => handleNavigation('/home')
+        }/>
+        <img 
+        src={aboutButton} 
+        alt="About" 
+        className="nav-button" 
+        onClick={() => handleNavigation('/about')} 
+        />
       </div>
     </div>
   );
