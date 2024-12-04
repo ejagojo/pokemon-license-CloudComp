@@ -7,8 +7,8 @@ const HomePage = () => {
   return (
     <div className="home-container">
       {/* Intro Section */}
+      {/* <SearchLicense /> */}
       <Intro />
-
       {/* Input Form Section */}
       <InputForm />
     </div>

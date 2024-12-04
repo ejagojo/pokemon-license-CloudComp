@@ -78,7 +78,7 @@ const InputForm = () => {
 
     // Send only the license ID to the backend
     try {
-      const response = await fetch("YOUR_API_ENDPOINT_HERE", { // ENDPOINT RIGHT HEREE
+      const response = await fetch("https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submit", { // ENDPOINT RIGHT HEREE
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ licenseID }), // Send only the license ID

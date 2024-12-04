@@ -36,7 +36,7 @@ const PokemonLicense = ({ uid, onClose }) => {
     const saveToDatabase = async () => {
       if (licenseImage && trainerData?.licenseID) {
         try {
-          const response = await fetch("YOUR_API_ENDPOINT_HERE", {
+          const response = await fetch("https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
