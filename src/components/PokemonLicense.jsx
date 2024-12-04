@@ -7,52 +7,75 @@ const PokemonLicense = ({ uid, onClose }) => {
 
   // Fetch data from localStorage to display the license
   useEffect(() => {
-    const fetchData = () => {
+    try {
       const savedData = localStorage.getItem("trainerData");
       if (savedData) {
         setTrainerData(JSON.parse(savedData));
+      } else {
+        console.warn("No trainer data found in localStorage.");
       }
-    };
-    fetchData();
+    } catch (err) {
+      console.error("Error parsing localStorage data:", err);
+    }
   }, []);
 
   // Generate a license image for the license to be stored
   useEffect(() => {
     if (trainerData) {
-      // Use html-to-image or similar library to generate an image of the license
-      import("html-to-image").then((htmlToImage) => {
-        const licenseElement = document.getElementById("license-card");
-        if (licenseElement) {
-          htmlToImage.toPng(licenseElement).then((dataUrl) => {
-            setLicenseImage(dataUrl); // Set the generated license image as base64
-          });
-        }
-      });
+      import("html-to-image")
+        .then((htmlToImage) => {
+          const licenseElement = document.getElementById("license-card");
+          if (licenseElement) {
+            htmlToImage
+              .toPng(licenseElement)
+              .then((dataUrl) => {
+                setLicenseImage(dataUrl); // Set the generated license image as base64
+              })
+              .catch((err) => {
+                console.error("Error generating license image:", err);
+              });
+          } else {
+            console.warn("License element not found.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error importing html-to-image library:", err);
+        });
     }
   }, [trainerData]);
 
-  // Save the license data to the database as soon as the license image is generated
+  // Save the license data to the database when the license image is generated
   useEffect(() => {
     const saveToDatabase = async () => {
       if (licenseImage && trainerData?.licenseID) {
         try {
-          const response = await fetch("https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              licenseID: trainerData.licenseID, // License ID
-              licenseImage, // Base64 of the generated license image
-            }),
-          });
+          const response = await fetch(
+            "https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submit",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                licenseID: trainerData.licenseID, // License ID
+                licenseImage, // Base64 of the generated license image
+              }),
+            }
+          );
 
-          if (response.ok) {
-            console.log("License successfully saved to database:", await response.json());
-          } else {
-            console.error("Failed to save license to database:", await response.text());
+          if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(
+              `Failed to save license to database. Status: ${response.status}, Message: ${errorMessage}`
+            );
           }
+
+          console.log("License successfully saved to database:", await response.json());
         } catch (error) {
-          console.error("Error saving license to database:", error);
+          console.error("Error saving license to database:", error.message || error);
         }
+      } else if (!licenseImage) {
+        console.warn("License image not generated yet.");
+      } else {
+        console.warn("Trainer data or license ID is missing.");
       }
     };
 

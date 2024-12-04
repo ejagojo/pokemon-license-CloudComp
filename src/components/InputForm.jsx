@@ -76,24 +76,10 @@ const InputForm = () => {
     localStorage.setItem("trainerData", JSON.stringify(licenseData));
     console.log("License Data Saved to LocalStorage:", licenseData);
 
-    // Send only the license ID to the backend
-    try {
-      const response = await fetch("https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submit", { // ENDPOINT RIGHT HEREE
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ licenseID }), // Send only the license ID
-      });
-
-      if (response.ok) {
-        console.log("License ID saved successfully:", await response.json());
-        setShowLicense(true);
-      } else {
-        console.error("Failed to save license ID to backend:", await response.text());
-      }
-    } catch (error) {
-      console.error("Error saving license ID to backend:", error);
-    }
+    // Set license as ready for generation
+    setShowLicense(true); // This will trigger the PokemonLicense component
   };
+
 
   // Custom styles for the react-select component
   const customStyles = {
