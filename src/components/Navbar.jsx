@@ -90,7 +90,14 @@ const Navbar = () => {
       {/* License Details Display */}
       {licensePdfUrl && (
         <div className="license-details">
-          <p>License PDF found for ID: <strong>{licenseID}</strong></p>
+          <button className="close-button" onClick={() => setLicensePdfUrl(null)}>
+            &times;
+          </button>
+          <p>
+            <strong>License Found!</strong>
+            <br />
+            For License ID: <span>{licenseID}</span>
+          </p>
           <a
             href={licensePdfUrl}
             target="_blank"
@@ -101,6 +108,8 @@ const Navbar = () => {
           </a>
         </div>
       )}
+
+
 
       {/* Navigation Links */}
       <div className="nav-links">

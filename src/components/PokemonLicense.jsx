@@ -4,6 +4,8 @@ import "../styles/pokemon-license.css";
 const PokemonLicense = ({ uid, onClose }) => {
   const [trainerData, setTrainerData] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadMessage, setUploadMessage] = useState(""); // For notifications
+  const [uploadSuccess, setUploadSuccess] = useState(false); // Determines success or failure style
 
   // Fetch data from localStorage to display the license
   useEffect(() => {
@@ -26,58 +28,63 @@ const PokemonLicense = ({ uid, onClose }) => {
       setUploadedFile(file);
     }
   };
-const handleSubmitUpload = async () => {
-  if (!uploadedFile || !trainerData?.licenseID) {
-    console.warn("Uploaded file or trainer data is missing.");
-    return;
-  }
 
-  // Convert file to base64
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]); // Get only the base64 part
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-  };
-
-  try {
-    const base64File = await fileToBase64(uploadedFile);
-
-    // Create the JSON payload
-    const payload = {
-      licenseID: trainerData.licenseID,
-      pdfData: base64File,
-    };
-
-    // Make the POST request
-    const response = await fetch(
-      "https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submitData",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(
-        `Failed to save uploaded license. Status: ${response.status}, Message: ${errorMessage}`
-      );
+  const handleSubmitUpload = async () => {
+    if (!uploadedFile || !trainerData?.licenseID) {
+      console.warn("Uploaded file or trainer data is missing.");
+      setUploadMessage("File or trainer data is missing.");
+      setUploadSuccess(false);
+      return;
     }
 
-    console.log("Uploaded license successfully saved to database:", await response.json());
-  } catch (error) {
-    console.error("Error saving uploaded license to database:", error.message || error);
-  }
-};
+    const fileToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(",")[1]); // Get only the base64 part
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+    };
+
+    try {
+      const base64File = await fileToBase64(uploadedFile);
+
+      const payload = {
+        licenseID: trainerData.licenseID,
+        pdfData: base64File,
+      };
+
+      const response = await fetch(
+        "https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submitData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+          `Failed to save uploaded license. Status: ${response.status}, Message: ${errorMessage}`
+        );
+      }
+
+      const result = await response.json();
+      console.log("Uploaded license successfully saved to database:", result);
+      setUploadMessage("License uploaded successfully!");
+      setUploadSuccess(true);
+    } catch (error) {
+      console.error("Error saving uploaded license to database:", error.message || error);
+      setUploadMessage("Failed to upload license. Please try again.");
+      setUploadSuccess(false);
+    }
+  };
 
   const handlePrint = () => {
-    window.print(); // Opens print dialog
+    window.print();
   };
 
   if (!trainerData) {
@@ -92,6 +99,14 @@ const handleSubmitUpload = async () => {
 
   return (
     <div className="license-modal">
+      {uploadMessage && (
+        <div
+          className={`upload-notification ${uploadSuccess ? "success" : "error"}`}
+        >
+          {uploadMessage}
+        </div>
+      )}
+
       <div id="license-card" className="license-horizontal">
         {/* Header */}
         <div className="license-header">
@@ -101,15 +116,12 @@ const handleSubmitUpload = async () => {
 
         {/* Body */}
         <div className="license-body">
-          {/* Trainer Image */}
           <div className="trainer-image">
             <img
-              src={trainerData.profileImage || "/assets/placeholder.png"} // Fallback image
+              src={trainerData.profileImage || "/assets/placeholder.png"}
               alt={`${trainerData.name}'s Profile`}
             />
           </div>
-
-          {/* Trainer Info */}
           <div className="trainer-info">
             <p>
               <strong>Email:</strong> {trainerData.email}
@@ -140,7 +152,7 @@ const handleSubmitUpload = async () => {
                     alt={pokemon.name}
                     className="pokemon-sprite"
                     onError={(e) => {
-                      e.target.src = "/assets/placeholder.png"; // Fallback image
+                      e.target.src = "/assets/placeholder.png";
                     }}
                   />
                 </a>
