@@ -7,50 +7,65 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [licenseID, setLicenseID] = useState("");
-  const [licenseImage, setLicenseImage] = useState(null); // Stores the retrieved license image
+  const [licensePdfUrl, setLicensePdfUrl] = useState(null); // Stores the retrieved license PDF URL
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Controls the modal visibility
 
   const navigate = useNavigate();
 
+  // Fetch license data by licenseID
   const handleSearch = async () => {
+    console.log("Initiating search for License ID:", licenseID); // Debug statement
     setError(null);
-    setLicenseImage(null); // Clear previous license data
-    setIsModalOpen(false); // Close the modal if it's open
+    setLicensePdfUrl(null); // Clear previous license data
 
     if (!licenseID.trim()) {
+      console.warn("License ID input is empty."); // Debug statement
       setError("Please enter a License ID.");
       return;
     }
 
     try {
-      const response = await fetch("THIS IS WHERE WE WILL DO THE END POINT", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ licenseID }),
-      });
+      console.log("Sending request to API with License ID:", licenseID); // Debug statement
+      const response = await fetch(
+        `https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/fetch-license?licenseID=${encodeURIComponent(
+          licenseID
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        setLicenseImage(data.licenseImage); // Assuming the API returns the image URL
-        setIsModalOpen(true); // Open the modal with the retrieved license
-      } else {
+        console.log("API response received successfully:", data); // Debug statement
+        if (data.licenseURL) {
+          setLicensePdfUrl(data.licenseURL); // Use the returned S3 URL for the license PDF
+          console.log("License PDF URL set successfully:", data.licenseURL); // Debug statement
+        } else {
+          console.error("No licenseURL returned from API:", data); // Debug statement
+          setError("License data received but URL is missing. Please contact support.");
+        }
+      } else if (response.status === 404) {
+        console.warn("License not found for License ID:", licenseID); // Debug statement
         setError("License not found. Please check the License ID and try again.");
+      } else {
+        console.error("Unexpected response from API:", response.status); // Debug statement
+        setError("An unexpected error occurred. Please try again later.");
       }
     } catch (err) {
-      setError("An error occurred while fetching the license details.");
+      console.error("Error occurred during API request:", err); // Debug statement
+      setError("An error occurred while fetching the license details. Please check your connection.");
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal
+  // Navigation handler
+  const handleNavigation = (path) => {
+    console.log("Navigating to:", path); // Debug statement
+    navigate(path);
   };
-
-    const handleNavigation = (path) => {
-        navigate(path);
-    }
 
   return (
     <div className="navbar">
@@ -72,31 +87,34 @@ const Navbar = () => {
         {error && <div className="error-message">{error}</div>}
       </div>
 
-      {/* Modal */}
-      {isModalOpen && licenseImage && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <img src={licenseImage} alt="Trainer License" className="modal-license-image" />
-            <button className="close-modal-button" onClick={handleCloseModal}>
-              Close
-            </button>
-          </div>
+      {/* License Details Display */}
+      {licensePdfUrl && (
+        <div className="license-details">
+          <p>License PDF found for ID: <strong>{licenseID}</strong></p>
+          <a
+            href={licensePdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="download-link"
+          >
+            Open License PDF
+          </a>
         </div>
       )}
 
       {/* Navigation Links */}
       <div className="nav-links">
-        <img 
-        src={homeButton} 
-        alt="Home" 
-        className="nav-button" 
-        onClick={() => handleNavigation('/home')
-        }/>
-        <img 
-        src={aboutButton} 
-        alt="About" 
-        className="nav-button" 
-        onClick={() => handleNavigation('/about')} 
+        <img
+          src={homeButton}
+          alt="Home"
+          className="nav-button"
+          onClick={() => handleNavigation("/home")}
+        />
+        <img
+          src={aboutButton}
+          alt="About"
+          className="nav-button"
+          onClick={() => handleNavigation("/about")}
         />
       </div>
     </div>

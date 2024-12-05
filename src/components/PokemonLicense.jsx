@@ -3,7 +3,7 @@ import "../styles/pokemon-license.css";
 
 const PokemonLicense = ({ uid, onClose }) => {
   const [trainerData, setTrainerData] = useState(null);
-  const [licenseImage, setLicenseImage] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   // Fetch data from localStorage to display the license
   useEffect(() => {
@@ -19,70 +19,62 @@ const PokemonLicense = ({ uid, onClose }) => {
     }
   }, []);
 
-  // Generate a license image for the license to be stored
-  useEffect(() => {
-    if (trainerData) {
-      import("html-to-image")
-        .then((htmlToImage) => {
-          const licenseElement = document.getElementById("license-card");
-          if (licenseElement) {
-            htmlToImage
-              .toPng(licenseElement)
-              .then((dataUrl) => {
-                setLicenseImage(dataUrl); // Set the generated license image as base64
-              })
-              .catch((err) => {
-                console.error("Error generating license image:", err);
-              });
-          } else {
-            console.warn("License element not found.");
-          }
-        })
-        .catch((err) => {
-          console.error("Error importing html-to-image library:", err);
-        });
+  // Handle file upload
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedFile(file);
     }
-  }, [trainerData]);
+  };
+const handleSubmitUpload = async () => {
+  if (!uploadedFile || !trainerData?.licenseID) {
+    console.warn("Uploaded file or trainer data is missing.");
+    return;
+  }
 
-  // Save the license data to the database when the license image is generated
-  useEffect(() => {
-    const saveToDatabase = async () => {
-      if (licenseImage && trainerData?.licenseID) {
-        try {
-          const response = await fetch(
-            "https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submit",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                licenseID: trainerData.licenseID, // License ID
-                licenseImage, // Base64 of the generated license image
-              }),
-            }
-          );
+  // Convert file to base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]); // Get only the base64 part
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
 
-          if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(
-              `Failed to save license to database. Status: ${response.status}, Message: ${errorMessage}`
-            );
-          }
+  try {
+    const base64File = await fileToBase64(uploadedFile);
 
-          console.log("License successfully saved to database:", await response.json());
-        } catch (error) {
-          console.error("Error saving license to database:", error.message || error);
-        }
-      } else if (!licenseImage) {
-        console.warn("License image not generated yet.");
-      } else {
-        console.warn("Trainer data or license ID is missing.");
-      }
+    // Create the JSON payload
+    const payload = {
+      licenseID: trainerData.licenseID,
+      pdfData: base64File,
     };
 
-    if (licenseImage) {
-      saveToDatabase(); // Trigger save to database when license image is ready
+    // Make the POST request
+    const response = await fetch(
+      "https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submitData",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(
+        `Failed to save uploaded license. Status: ${response.status}, Message: ${errorMessage}`
+      );
     }
-  }, [licenseImage, trainerData]);
+
+    console.log("Uploaded license successfully saved to database:", await response.json());
+  } catch (error) {
+    console.error("Error saving uploaded license to database:", error.message || error);
+  }
+};
 
   const handlePrint = () => {
     window.print(); // Opens print dialog
@@ -163,6 +155,15 @@ const PokemonLicense = ({ uid, onClose }) => {
       <div className="license-buttons">
         <button onClick={handlePrint}>Print License</button>
         <button onClick={onClose}>Close</button>
+      </div>
+
+      {/* Upload Section */}
+      <div className="upload-section">
+        <h3>Upload Your License To The Database</h3>
+        <input type="file" accept=".png,.jpg,.jpeg,.pdf" onChange={handleFileUpload} />
+        <button onClick={handleSubmitUpload} disabled={!uploadedFile}>
+          Submit License
+        </button>
       </div>
     </div>
   );

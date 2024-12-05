@@ -233,7 +233,7 @@ const InputForm = () => {
               onChange={(e) => setSignatureMove(e.target.value)}
             />
           </label>
-          <button type="submit">Submit</button>
+          <button type="submit">Generate</button>
         </form>
       </div>
       {showLicense && (
