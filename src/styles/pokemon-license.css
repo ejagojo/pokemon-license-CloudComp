@@ -254,3 +254,137 @@
     display: none;
   }
 }
+.upload-popup {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  background: linear-gradient(135deg, #ffde00 0%, #3b4cca 100%);
+  border-radius: 12px;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  z-index: 1001;
+  font-family: "Pokemon Classic", sans-serif;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ensures all children, including .file-input, are horizontally centered */
+  justify-content: center; /* Ensures all children are vertically aligned if needed */
+  animation: fadeInPopup 0.4s ease-out;
+}
+
+/* Popup Header */
+.popup-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.popup-header h3 {
+  font-size: 18px;
+  color: #ff0000;
+  margin: 0;
+}
+
+.popup-close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.popup-close-button:hover {
+  transform: scale(1.2);
+}
+
+/* Upload Instructions */
+.upload-instructions {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Highlighted License ID */
+.license-id-highlight {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 10px;
+  border-radius: 10px;
+  color: #ff0000;
+  margin-bottom: 16px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* File Input Wrapper */
+.upload-input-wrapper {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* File Input Styling */
+.file-input {
+  width: 90%; /* Full width within container */
+  padding: 10px;
+  border: 2px dashed rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #000000;
+  font-family: "Arial", sans-serif;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background 0.3s ease;
+  margin-top: 12px; /* Adds spacing from elements above */
+}
+
+.file-input:hover {
+  border-color: #ffde00;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Submit Button */
+.upload-button {
+  width: 100%;
+  color: #fff;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease, background 0.3s ease;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.upload-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2e3b8e 0%, #3b4cca 100%);
+  transform: scale(1.05);
+}
+
+.upload-button:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Animations */
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

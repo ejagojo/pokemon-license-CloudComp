@@ -6,8 +6,9 @@ const PokemonLicense = ({ uid, onClose }) => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState(""); // For notifications
   const [uploadSuccess, setUploadSuccess] = useState(false); // Determines success or failure style
+  const [isUploadPopupVisible, setUploadPopupVisible] = useState(false); // Toggle upload popup visibility
 
-  // Fetch data from localStorage to display the license
+  // Fetch trainer data from localStorage
   useEffect(() => {
     try {
       const savedData = localStorage.getItem("trainerData");
@@ -24,14 +25,12 @@ const PokemonLicense = ({ uid, onClose }) => {
   // Handle file upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setUploadedFile(file);
-    }
+    if (file) setUploadedFile(file);
   };
 
+  // Submit uploaded file
   const handleSubmitUpload = async () => {
     if (!uploadedFile || !trainerData?.licenseID) {
-      console.warn("Uploaded file or trainer data is missing.");
       setUploadMessage("File or trainer data is missing.");
       setUploadSuccess(false);
       return;
@@ -40,7 +39,7 @@ const PokemonLicense = ({ uid, onClose }) => {
     const fileToBase64 = (file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(",")[1]); // Get only the base64 part
+        reader.onload = () => resolve(reader.result.split(",")[1]);
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(file);
       });
@@ -48,48 +47,36 @@ const PokemonLicense = ({ uid, onClose }) => {
 
     try {
       const base64File = await fileToBase64(uploadedFile);
-
-      const payload = {
-        licenseID: trainerData.licenseID,
-        pdfData: base64File,
-      };
+      const payload = { licenseID: trainerData.licenseID, pdfData: base64File };
 
       const response = await fetch(
         "https://ane5inhq3k.execute-api.us-east-1.amazonaws.com/dev/submitData",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
       );
 
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(
-          `Failed to save uploaded license. Status: ${response.status}, Message: ${errorMessage}`
-        );
-      }
+      if (!response.ok) throw new Error("Upload failed");
 
-      const result = await response.json();
-      console.log("Uploaded license successfully saved to database:", result);
       setUploadMessage("License uploaded successfully!");
       setUploadSuccess(true);
     } catch (error) {
-      console.error("Error saving uploaded license to database:", error.message || error);
       setUploadMessage("Failed to upload license. Please try again.");
       setUploadSuccess(false);
     }
+  };
+
+  const toggleUploadPopup = () => {
+    setUploadPopupVisible(!isUploadPopupVisible);
   };
 
   const handlePrint = () => {
     window.print();
   };
 
-  if (!trainerData) {
-    return <p>Loading...</p>;
-  }
+  if (!trainerData) return <p>Loading...</p>;
 
   const pokemonSprites = trainerData.pokemonTeam.map((pokemon) => ({
     name: pokemon,
@@ -123,21 +110,11 @@ const PokemonLicense = ({ uid, onClose }) => {
             />
           </div>
           <div className="trainer-info">
-            <p>
-              <strong>Email:</strong> {trainerData.email}
-            </p>
-            <p>
-              <strong>Region:</strong> {trainerData.region}
-            </p>
-            <p>
-              <strong>Trainer Type:</strong> {trainerData.trainerType}
-            </p>
-            <p>
-              <strong>Signature Move:</strong> {trainerData.signatureMove}
-            </p>
-            <p>
-              <strong>Badges:</strong> {trainerData.badgeCount}
-            </p>
+            <p><strong>Email:</strong> {trainerData.email}</p>
+            <p><strong>Region:</strong> {trainerData.region}</p>
+            <p><strong>Trainer Type:</strong> {trainerData.trainerType}</p>
+            <p><strong>Signature Move:</strong> {trainerData.signatureMove}</p>
+            <p><strong>Badges:</strong> {trainerData.badgeCount}</p>
           </div>
         </div>
 
@@ -166,17 +143,51 @@ const PokemonLicense = ({ uid, onClose }) => {
       {/* Buttons */}
       <div className="license-buttons">
         <button onClick={handlePrint}>Print License</button>
+        <button onClick={toggleUploadPopup}>Upload License To Database</button>
         <button onClick={onClose}>Close</button>
       </div>
 
-      {/* Upload Section */}
-      <div className="upload-section">
-        <h3>Upload Your License To The Database</h3>
-        <input type="file" accept=".png,.jpg,.jpeg,.pdf" onChange={handleFileUpload} />
-        <button onClick={handleSubmitUpload} disabled={!uploadedFile}>
-          Submit License
-        </button>
-      </div>
+      {/* Minimal Upload Popup */}
+      {isUploadPopupVisible && (
+        <div className="upload-popup">
+          <div className="popup-header">
+            <h3>Upload Your License</h3>
+            <button className="popup-close-button" onClick={toggleUploadPopup}>
+              ×
+            </button>
+          </div>
+
+          {/* Instructions */}
+          <p className="upload-instructions">
+            Remember your <strong>License ID</strong> to retrieve your license using the search bar.
+          </p>
+
+          {/* Highlighted License ID */}
+          <p className="license-id-highlight">
+            License ID: <span className="trainer-id">{trainerData.licenseID}</span>
+          </p>
+
+          {/* File Upload Input */}
+          <div className="upload-input-wrapper">
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,.pdf"
+              onChange={handleFileUpload}
+              className="file-input"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            className="upload-button"
+            onClick={handleSubmitUpload}
+            disabled={!uploadedFile}
+          >
+            Submit License
+          </button>
+        </div>
+
+      )}
     </div>
   );
 };
